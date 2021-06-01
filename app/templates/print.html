@@ -1,0 +1,218 @@
+{% load static %}
+{% load mathfilters %}
+<html>
+    <head>
+        <title>{{tank.rodzaj}} {{tank.numer}}</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta charset="U-8">        
+        <style type="text/css">
+
+            @page { size: A4; margin: 1cm;
+                    @frame footer_frame {           /* Another static Frame */
+                    -pdf-frame-content: footer_content;
+                    left: 50pt; width: 512pt; top: 792pt; height: 20pt;
+                }
+                }
+            
+            @font-face { font-family: Arial; 
+                         src: url("http://localhost/static/fonts/arial.ttf" );
+                        }
+            
+            /* Bold */
+            @font-face {
+                font-family: Arialbold;
+                src: url( "http://localhost/static/fonts/arialbold.ttf" );
+                        }
+    
+           body {
+               font-size: 16px;
+           }
+            p{
+                font-family: Arial;
+            }
+           span {
+                font-family: Arial;
+           }
+           strong {
+            font-family: Arialbold;
+           }
+
+
+        </style>
+    </head>
+    <body>
+        <!-- #######  YAY, I AM THE SOURCE EDITOR! #########-->
+<p style="text-align: right;">Słupsk dnia&nbsp;{{today}}</p>
+<p align="CENTER"><strong>Protokół nr : OT5/{{tank.nr_odbioru}}/{{tank.dataBadania | date:"y" }}/BOR/R{{tank.nr_rozrywania}}</strong> <br> z próby zbiornika LPG na rozerwanie</span></p>
+<ol>
+<table >
+    <tr>
+      <td style="border: 1px" width="300px">
+        <p ><span >1.  <u> Wytwórca zbiornika:</u></span></p>
+      </td>
+     
+      <td >
+         <p><strong>P.P.H. &rdquo;Bormech&rdquo; Sp. z o.o. Zakład Nr 2;<br> ul. Grunwaldzka 10; 76-200 Słupsk</strong></p>
+      </td>
+      <td width="20px"></td>
+    </tr>
+  </table>
+<br>
+<table >
+    <tr>
+      <td style="border: 1px" width="300px">
+        <p  width="600px">2. <u>Nr fabryczny</u> <strong>{{tank.rodzaj}} {{tank.numer}}</strong></p>
+      </td>
+      
+      <td >
+         <p> <u>Data produkcji: </u> <strong>{{tank.dataBadania | date:"Y" }}</strong> </p>
+      </td>
+      <td width="240px"></td>
+    </tr>
+  </table>
+  <table id="upp">
+    <tr>
+      <td style="border: 1px" width="300px">
+        <p class="alignleft"><span >3.  <u>Klasa zbiornika</u></span><span >: </span><span ><strong>1</strong></span><span ></span></p>
+      </td>
+     
+      <td align="left">
+         <p><span ><u>Pojemność zbiornika:</u></span> <span ><strong>{{tank.rodzaj.capacity}} l</strong></span> </p>
+      </td>
+      <td></td>
+    </tr>
+  </table>
+  
+  <table  >
+    <tr>
+      <td  width="250px">
+        <p ><span >4.  <u>Miejsce i data badania</u></span><span >: </span><span ></span></p>
+      </td>
+     
+      <td >
+         <p><strong>P.P.H. Bormech&rdquo; Sp. z o.o. Zakład Nr 2;<br>w Słupsk dnia {{tank.dataBadania}}</strong></p>
+      </td>
+      <td width="20px"></td>
+    </tr>
+  </table>
+<table>
+    <tr>
+        <td><p>5. <u>Ciśnienie próbne :</u> </p> </td>
+        <td><p><strong>3.0 MPa</strong></p></td>
+        <td></td>
+        <td></td>
+    </tr>
+</table>
+<table>
+<tr>
+    <td>
+        <p>6. <u>Ciśn. rozrywające:</u> </p>
+    </td>
+    <td width="350px">
+                 <p> a)minimalne (2,25 ciśn. próbnego) <strong>6,75 MPa</strong>
+                <br>b)rzeczywiste  <strong>
+                {{pres}} MPa</strong></p>
+        
+       
+    </td>
+    <td></td>
+</tr>
+</table>
+
+<table>
+    <tr>
+        <td>
+            <p align="left"><span >7. <u>Szkic umiejscowienia pęknięcia zbiornika po rozerwaniu</u></span><span >:</span></p>
+        </td>
+    </tr>
+</table>
+<table>
+    <tr>
+        <td>
+
+        </td>
+        <td width="450px" height="250px">
+        {% if typ == 1 %}
+            <img src="/static/WEW.jpg"  >
+        {% endif %}
+        {% if typ == 2 %}
+            <img src="/static/WEW.jpg"  >
+        {% endif %}
+
+        </td>
+        <td></td>
+    </tr>
+</table>
+<table border="0">
+    <tr style="vertical-align: top; text-align: left;">
+        <td width="250px" ><span>8. <u>Opis charakteru pęknięcia:</u> <br> </span></></td>
+        <td> <p><span>Brak oznak kruchego pękania. <br> Charakter pęknięcia –  <strong>plastyczny</strong> </span></p> </td>
+    </tr>
+</table>
+<table border="0">
+<tr>
+    <td width="250px">
+        <p><span>9.  <u>Ocena wyników badania: </u></span></p>
+    </td>
+    <td>
+        Wynik badania – <strong>{% if procent < 8 %}
+        negatywny
+        {% else %}
+        pozytywny
+        {% endif %}  </strong>
+    </td>
+</tr>
+</table>
+<table><tr><td><p><span>10.  <u>Rejestracja przyrostu ciśnienia i objętości.</u></span></p></td></tr></table>
+<table align="center" border="1" style="width: 50px; height: 30px;">
+    <tr>
+        <th width="150px"><p>Ciśnienie [MPa]</p></th>
+        <th width="200px"><p>Przyrost objętości [l]</p></th>
+        <th width="150px"><p>Uwagi</p></th>
+        
+    </tr>
+    {% for badanie in badania %}
+    <tr>
+        <td ><p align="center" ><strong>{{badanie.cisnienie|div:10}}</strong></p></td>
+        <td><p align="center" ><strong>{{badanie.woda|floatformat:1}}</strong></td>
+        <td>-----------------</td>
+    </tr>
+    {% endfor %}
+</table>
+<table >
+    <tr>
+        <td><br>
+           <p><span>11.<u> Przyrost objętości w momencie poprzedzającym rozerwanie </u></span></p> 
+        </td>
+    </tr>
+    <tr >
+        <td align="center"><p ><span><strong> {{woda|floatformat:1}}</strong> {% if woda >= 5 %}
+        litrów
+        {% else %}
+        litry
+        {% endif %}, co stanowi <strong>{{procent|floatformat:2}} %</strong>  początkowej objętości zbiornika.</span></p></td>
+    </tr>
+</table>
+<table>
+    <tr>
+        <td>12. <u>Uwagi, zalecenia:</u>   ---</td>
+    </tr>
+</table>
+<div id="footer_content">
+    <table >
+        <tr>
+            <td><hr></td>
+            <td></td>
+            <td><hr> </td>
+        </tr>
+
+        <tr >
+            <td style="vertical-align: middle; text-align: center;"> <p>Podpis KJ „Bormech”</p> </td>
+            <td></td>
+            <td><p> Podpis Inspektora TDT</p></td>
+        </tr>
+    </table>
+</div>
+    </body>
+
+</html>

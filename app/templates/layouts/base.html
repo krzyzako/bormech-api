@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="/static/assets/favicon.ico" type="image/x-icon">
+
+  <title>
+    AdminBOR - {% block title %}{% endblock %} | Bormech
+  </title> 
+  <style>
+blink {
+  -webkit-animation: 2s linear infinite condemned_blink_effect; /* for Safari 4.0 - 8.0 */
+  animation: 2s linear infinite condemned_blink_effect;
+}
+
+/* for Safari 4.0 - 8.0 */
+@-webkit-keyframes condemned_blink_effect { 
+  0% {
+    visibility: hidden;
+  }
+  50% {
+    visibility: hidden;
+  }
+  100% {
+    visibility: visible;
+  }
+}
+
+@keyframes condemned_blink_effect {
+  0% {
+    visibility: hidden;
+  }
+  50% {
+    visibility: hidden;
+  }
+  100% {
+    visibility: visible;
+  }
+}
+</style>
+  {% block stylesheets %}{% endblock stylesheets %}
+
+</head>
+<body class="hold-transition {% block body_class %}{% endblock body_class %}">
+<div class="wrapper">
+
+    {% include 'includes/navigation.html' %}
+
+    {% include 'includes/sidebar.html' %}
+
+    {% block content %}{% endblock content %}
+
+    {% include 'includes/footer.html' %}
+
+    <!-- Control Sidebar -->
+    <aside class="control-sidebar control-sidebar-dark">
+        <!-- Control sidebar content goes here -->
+    </aside>
+    <!-- /.control-sidebar -->
+
+</div>
+<!-- ./wrapper -->
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}{% endblock javascripts %}
+
+</body>
+</html>

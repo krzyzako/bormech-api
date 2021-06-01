@@ -1,0 +1,151 @@
+{% extends "layouts/base.html" %}
+{% load l10n %}
+{% block title %} Badania {% endblock %} 
+
+<!-- Element injected in the BODY element -->
+{% block body_class %} sidebar-mini pace-primary {% endblock body_class %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}
+ <!-- Ionicons -->
+  <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+  <!-- Google Font: Source Sans Pro -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="/static/assets/plugins/fontawesome-free/css/all.min.css">
+  <!-- pace-progress -->
+  <link rel="stylesheet" href="/static/assets/plugins/pace-progress/themes/black/pace-theme-flat-top.css">
+    <!-- DataTables -->
+  <link rel="stylesheet" href="/static/assets/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+  <link rel="stylesheet" href="/static/assets/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
+  <!-- adminlte-->
+  <link rel="stylesheet" href="/static/assets/css/adminlte.min.css">
+
+{% endblock stylesheets %}
+
+{% block content %}  
+
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h3>Badania</h3>
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="#">Home</a></li>
+              <li class="breadcrumb-item active">Badania</li>
+            </ol>
+          </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+    
+    <!-- Main content -->
+    <section class="content">
+              <div class="card">
+                <div class="card-header">
+                  <h3 class="card-title text-blue text-bold">Badania</h3>
+
+
+                </div>
+               <div class="card-body">
+                <table id="example1" class="table table-bordered ">
+                  <thead>
+                  <tr>
+                    <th width="20px" class="text-center text-blue">Data</th>
+                    <th class="text-center text-blue">Nr protokołu</th>
+                    <th class="text-center text-blue">Symbol</th>
+                    <th class="text-center text-blue">Numer</th>
+                    <th class="text-center text-blue">Opcje</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  
+ 
+                  {% for zbiornik in zbiorniki %}
+                    
+                    <tr >
+                        <td width="150px"  class="text-bold text-right  ">{{zbiornik.dataBadania}}</td>
+                        <td class="text-bold text-center "> OT5/{{zbiornik.nr_odbioru}}/{{zbiornik.dataBadania | date:"y" }}/BOR/R{{zbiornik.nr_rozrywania}}</td>
+                        <td width="250px" class="text-bold text-center ">{{zbiornik.rodzaj}}</td>
+                        <td class="text-center ">{{zbiornik.numer}} </td>
+
+                        <td width="100px">            
+                          <a href="/badania/view/{{zbiornik.id}}" target="_blank"><button type="button" class="btn btn-primary btn-xs float-left">Podgląd</button></a>
+                          <a href="/badania/delete/{{zbiornik.id}}"><button type="button" class="btn btn-danger btn-xs float-right" onclick="return confirm(\'Czy na pewno usunąć?\')">Usuń</button></a>
+                        </td>
+                    </tr>
+                  {% endfor %}
+                  
+                  </tfoot>
+                </table>
+              </div>
+              </div>
+
+    </section>
+    <!-- /.content -->
+  </div>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+
+  <!-- jQuery -->
+  <script src="/static/assets/plugins/jquery/jquery.min.js"></script>
+  <!-- Bootstrap 4 -->
+  <script src="/static/assets/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- pace-progress -->
+  <script src="/static/assets/plugins/pace-progress/pace.min.js"></script>
+  <!-- AdminLTE App -->
+  <script src="/static/assets/js/adminlte.min.js"></script>
+  <!-- AdminLTE for demo purposes -->
+  <script src="/static/assets/js/demo.js"></script>
+  <script src="/static/assets/plugins/datatables/jquery.dataTables.min.js"></script>
+  <script src="/static/assets/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+  <script src="/static/assets/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+  <script src="/static/assets/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+  <script>
+    $(function () {
+      $("#example1").DataTable({
+        "responsive": true,
+        "autoWidth": false,
+        "language": {
+                  "processing":     "Przetwarzanie...",
+                  "search":         "Szukaj:",
+                  "lengthMenu":     "Pokaż _MENU_ pozycji",
+                  "info":           "Pozycje od _START_ do _END_ z _TOTAL_ łącznie",
+                  "infoEmpty":      "Pozycji 0 z 0 dostępnych",
+                  "infoFiltered":   "(filtrowanie spośród _MAX_ dostępnych pozycji)",
+                  "infoPostFix":    "",
+                  "loadingRecords": "Wczytywanie...",
+                  "zeroRecords":    "Nie znaleziono pasujących pozycji",
+                  "emptyTable":     "Brak danych",
+                  "paginate": {
+                      "first":      "Pierwsza",
+                      "previous":   "Poprzednia",
+                      "next":       "Następna",
+                      "last":       "Ostatnia"
+                  },
+                  "aria": {
+                      "sortAscending": ": aktywuj, by posortować kolumnę rosnąco",
+                      "sortDescending": ": aktywuj, by posortować kolumnę malejąco"
+                  }
+            }
+      });
+
+    });
+  </script>
+  <script>
+  $('tr[data-href]').on("click", function() {
+    document.location = $(this).data('href');
+});  
+  </script>
+  <script>
+  
+  </script>
+
+{% endblock javascripts %}

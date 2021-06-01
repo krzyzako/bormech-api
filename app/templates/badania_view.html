@@ -1,0 +1,354 @@
+{% extends "layouts/base.html" %}
+{% load l10n %}
+{% load mathfilters %}
+{% block title %} Blank Page {% endblock %}
+
+<!-- Element injected in the BODY element -->
+{% block body_class %} sidebar-mini pace-primary {% endblock body_class %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}
+
+<!-- Google Font: Source Sans Pro -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+<!-- Font Awesome -->
+<link rel="stylesheet" href="/static/assets/plugins/fontawesome-free/css/all.min.css">
+<!-- pace-progress -->
+<link rel="stylesheet" href="/static/assets/plugins/pace-progress/themes/black/pace-theme-flat-top.css">
+<!-- adminlte-->
+<link rel="stylesheet" href="/static/assets/css/adminlte.min.css">
+
+{% endblock stylesheets %}
+
+{% block content %}
+
+<div class="content-wrapper">
+  <!-- Content Header (Page header) -->
+  <section class="content-header">
+    <div class="container-fluid">
+      <div class="row mb-2">
+        <div class="col-sm-6">
+          <h1>Edycjia zbiornika {{rodzaj.symbol}}</h1>
+        </div>
+
+      </div>
+    </div><!-- /.container-fluid -->
+
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="card card-info">
+        <div class="card-header">
+          <h3 class="card-title">Informacje o zbiorniku</h3>
+        </div>
+        <div class="card-body" data-toggle="modal" data-target="#exampleModal">
+          <!-- Color Picker -->
+          <div class="row">
+            <div class="col-12 col-md-4">
+              <h4>Numer zbiornika: <span class="badge badge-success">{{zbiornik.numer}} </sapan>
+              </h4>
+            </div>
+            <div class="col-12 col-md-4">
+              <h4>Model zbiornika: <span class="badge badge-success">{{zbiornik.rodzaj}} </sapan>
+              </h4>
+            </div>
+            <div class="col-12 col-md-4">
+              <h4>Rodzaj pęknięcia: <span type="button" class="badge badge-success" >
+                  {% if zbiornik.pekniecie == 1 %}
+                  plastyczne
+                  {% else %}
+                  kruche
+                  {% endif %}
+                </span> </h4>
+            </div>
+          </div>
+          <div class="row card-info">
+              
+              <div class="col-12 col-md-4">
+                  <h4> Data badania: <span class="badge badge-success">{{zbiornik.dataBadania}} </sapan>
+                  </h4>
+              </div>
+              
+              <div class="col-12 col-md-4">
+                <h4> Numer odbioru: <span class="badge badge-success">{{zbiornik.nr_odbioru}} </sapan>
+                </h4>
+              </div>
+
+              <div class="col-12 col-md-4">
+                <h4> Numer badania: <span class="badge badge-success">{{zbiornik.nr_rozrywania}} </sapan>
+                </h4>
+              </div>
+
+          </div>
+
+
+    </section>
+    <!-- /.content -->
+    <div class="row">
+    <section class="content col-md-6">
+      <div class="card card-info">
+        <div class="card-header border-transparent">
+          <h3 class="card-title">Zapisane próbkowania :</h3>
+
+          <div class="card-tools">
+            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+              <i class="fas fa-minus"></i>
+            </button>
+            <button type="button" class="btn btn-tool" data-card-widget="remove">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+        </div>
+        <!-- /.card-header -->
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="table m-0">
+              <thead>
+                <tr>
+                  <th>Ciśnienie</th>
+                  <th>Przyrost</th>
+
+                </tr>
+              </thead>
+              <tbody>
+                {% for pomiar in badania %}
+                <tr data-toggle="modal" data-target="#exampleModal{{pomiar.id}}">
+
+
+                  <td data-toggle="modal" data-target="#exampleModal{{pomiar.id}}"><span >
+                      <h3>{{ pomiar.cisnienie }}</h3>
+                      </sapan>
+                  </td>
+                  <td><span>
+                      <h3>{{ pomiar.woda|floatformat:2 }}</h3>
+                    </span></td>
+                </tr>
+
+                <!-- Modal -->
+                <div class="modal fade" id="exampleModal{{pomiar.id}}" tabindex="-1" role="dialog"
+                  aria-labelledby="exampleModalLabel" aria-hidden="true">
+                  <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Podaj wartości dla pomiaru:</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                      </div>
+                      <form method="POST" id="badanie_edit{{pomiar.id}}">
+                        {% csrf_token %}
+                        <div class="modal-body">
+                          <label>Cisnienie</label>
+                          <input  class="form-control form-control-lg" type="text" placeholder=".form-control-lg"
+                            value="{{pomiar.cisnienie}}">
+                          <label>Przyrost</label>
+                          <input class="form-control form-control-lg" type="text" placeholder=".form-control-lg"
+                            value="{{pomiar.woda|floatformat:2 }}">
+
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" onclick="reload()" class="btn btn-secondary" data-dismiss="modal">Zamknij</button>
+                          <button type="submit" class="btn btn-primary">Zachowaj zmiany</button>
+                        </div>
+                    </div>
+                    </form>
+                  </div>
+                </div>
+                {% endfor %}
+
+              </tbody>
+            </table>
+
+          </div>
+          <!-- /.table-responsive -->
+        </div>
+        <!-- /.card-body -->
+
+        <!-- /.card-footer -->
+      </div>
+
+
+</section>
+<section class="content col-md-6">
+  <div class="card text-center card-info">
+    <div class="card-header">
+      Informacja
+    </div>
+    <div class="card-body">
+      <h5 class="card-title"></h5>
+      <p class="card-text">Generowanie raportu w formacie PDF.</p>
+      <a href="/badania/print/{{zbiornik.id}}" class="btn btn-primary" target="_blank">Drukuj raport</a>
+    </div>
+  </div>
+  </div>
+</section>
+
+</div>
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Zmiana</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form id="tank_edit">
+        {% csrf_token %}
+        <input type="hidden" id="id" value="{{zbiornik.id}}"></input>
+        <div class="modal-body">
+          <label>Numer:</label>
+          <input class="form-control form-control-lg" type="text" id="numer" value="{{zbiornik.numer}}">
+          <ul id="numer_p">
+
+          </ul>
+
+          <label for="full-name">Numer odbioru:</label>
+          <input class="form-control form-control-lg" type="text" id="nr_odbioru" value="{{zbiornik.nr_odbioru}}">
+          <ul id="nr_odbioru_p">
+
+          </ul>
+          <label>Numer badania:</label>
+          <input class="form-control form-control-lg" type="text" id="nr_rozrywania" value="{{zbiornik.nr_rozrywania}}">
+          <ul id="nr_rozrywania_p">
+
+          </ul>
+          <label>Pęknięcie:</label>
+          <select class="form-control select2" id="pekniecie">
+            <option value="1" {% if zbiornik.pekniecie == 1  %} selected {% endif %}>Plastyczne</option>
+            <option value="2" {% if zbiornik.pekniecie == 2  %} selected {% endif %}>Kruche</option>
+          </select>
+          <div class="modal-footer">
+            <div id="zapis" ></div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="reload()" >Zamknij</button>
+          <button id="send" type="button"  class="btn btn-primary" onclick="test()">Zapisz zmiany</button>
+        </div>
+    </div>
+    </form>
+    </form>
+  </div>
+</div>
+
+
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+
+<!-- jQuery -->
+<script src="/static/assets/plugins/jquery/jquery.min.js"></script>
+<!-- Bootstrap 4 -->
+<script src="/static/assets/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+<!-- pace-progress -->
+<script src="/static/assets/plugins/pace-progress/pace.min.js"></script>
+<!-- AdminLTE App -->
+<script src="/static/assets/js/adminlte.min.js"></script>
+<!-- AdminLTE for demo purposes -->
+
+<script>
+  i = 0;
+  function checkIS(liczba){
+    is=true;
+    for (t in liczba) {
+      check = parseInt(liczba[t]);
+      if (!Number.isInteger(check)) {
+        is = false
+      }
+  }
+  return is
+  }
+
+  function checkNumber(liczba) {
+    is = true;
+    if (liczba.length === 4) {
+      for (t in liczba) {
+        check = parseInt(liczba[t]);
+        if (!Number.isInteger(check)) {
+          is = false
+        }
+      }
+    }
+    else {
+      is = false;
+    }
+    return is;
+  }
+
+  function test() {
+    i++
+    
+    const numer_p = document.querySelector('#numer_p');
+    const nr_odbioru_p = document.querySelector('#nr_odbioru_p');
+    const nr_rozrywania_p = document.querySelector('#nr_rozrywania_p');
+    const numer = document.getElementById("numer").value;
+    const index = document.getElementById("id").value;
+    const nr_odbioru = document.getElementById("nr_odbioru").value;
+    const nr_rozrywania = document.getElementById("nr_rozrywania").value;
+    const pekniecie = document.getElementById("pekniecie").value;
+   
+    console.log(checkNumber(numer));
+    if (!checkNumber(numer)) {
+      numer_p.innerHTML = `<li class="text-danger"> Nie poprawny numer zbiornika </li>`
+      document.getElementById("zapis").innerHTML = '<p class="text-danger">Błąd</p>'
+    }
+    else{
+      numer_p.innerHTML = ``
+    } 
+    if (!checkIS(nr_odbioru)) {
+      nr_odbioru_p.innerHTML = `<li class="text-danger"> Numer odbioru musi być liczbą </li>`
+      document.getElementById("zapis").innerHTML = '<p class="text-danger">Błąd</p>'
+    }
+    else{
+      nr_odbioru_p.innerHTML = ``
+    }
+    if (!checkIS(nr_rozrywania)) {
+      nr_rozrywania_p.innerHTML = `<li class="text-danger"> Numer badania musi być liczbą </li>`
+      document.getElementById("zapis").innerHTML = '<p class="text-danger">Błąd</p>'
+    }
+    else{
+      nr_rozrywania_p.innerHTML = ``
+    }
+    if (checkNumber(numer) && checkIS(nr_odbioru) && checkIS(nr_rozrywania) ) {
+      console.log(document.getElementsByName('csrfmiddlewaretoken')[0].value)
+      const formData = new FormData();
+      formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+      formData.append('numer', numer);
+      formData.append('nr_odbioru', nr_odbioru);
+      formData.append('nr_rozrywania',nr_rozrywania)
+      formData.append('pekniecie', pekniecie)
+      formData.append('id', '{{zbiornik.id}}');
+      postData('/badania/tank_edit/', formData)
+              .then(data => {
+                if (data.result === "Sussces")  {
+                  document.getElementById("zapis").innerHTML = '<p class="text-success">Zapisane</p>'
+                }
+                console.log(data); // JSON data parsed by `data.json()` call
+              });
+    }
+    else{
+      console.log('NOT OK') 
+    }
+  }
+
+  async function postData(url = '', data = {}) {
+    // Default options are marked with *
+    const response = await fetch(url, {
+      method: 'POST', // *GET, POST, PUT, DELETE, etc.
+      body: data// body data type must match "Content-Type" header
+    });
+    return response.json(); // parses JSON response into native JavaScript objects
+  }
+
+function reload(){
+  location.reload();
+}
+
+</script>
+{% endblock javascripts %}

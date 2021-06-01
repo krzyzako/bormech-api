@@ -1,0 +1,360 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Live Data {% endblock %} 
+
+<!-- Element injected in the BODY element -->
+{% block body_class %} sidebar-mini pace-primary {% endblock body_class %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.min.js" type="text/javascript"></script>
+<script src="https://rawgit.com/Mikhus/canvas-gauges/master/gauge.min.js" ></script>
+  <!-- Google Font: Source Sans Pro -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="/static/assets/plugins/fontawesome-free/css/all.min.css">
+  <!-- pace-progress -->
+  <link rel="stylesheet" href="/static/assets/plugins/pace-progress/themes/black/pace-theme-flat-top.css">
+  <!-- adminlte-->
+  <link rel="stylesheet" href="/static/assets/css/adminlte.min.css">
+  <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+
+
+  <script type="text/javascript">
+  
+  // Create a client instance
+  client = new Paho.MQTT.Client('10.1.1.223', 9001,"client_id");
+  //Example client = new Paho.MQTT.Client("m11.cloudmqtt.com", 32903, "web_" + parseInt(Math.random() * 100, 10));
+
+  // set callback handlers
+  client.onConnectionLost = onConnectionLost;
+  client.onMessageArrived = onMessageArrived;
+  var options = {
+    useSSL: false,
+    userName: "hmi",
+    password: "bormech4321",
+    onSuccess:onConnect,
+    onFailure:doFail
+  }
+
+  // connect the client
+  client.connect(options);
+
+  // called when the client connects
+  function onConnect() {
+    // Once a connection has been made, make a subscription and send a message.
+    //console.log("onConnect");
+    client.subscribe("stacja/live/#")
+    client.subscribe("stacja/save/badanie/#");
+    message = new Paho.MQTT.Message("Hello CloudMQTT");
+    message.destinationName = "stacja/";
+    client.send(message);
+  }
+
+  function doFail(e){
+    console.log(e);
+  }
+
+  // called when the client loses its connection
+  function onConnectionLost(responseObject) {
+    if (responseObject.errorCode !== 0) {
+      console.log("onConnectionLost:"+responseObject.errorMessage);
+      
+    }
+  }
+  function write(data){
+        
+      //console.log(data.symbol)
+      if (data.numer !== "" ){
+        document.getElementById("brak").style.visibility = "hidden";
+        document.getElementById("show").style.display = "initial";
+        //console.log(data.numer)
+        document.getElementById("symbol").innerHTML = data.symbol
+        document.getElementById("numer").innerHTML = data.numer
+        document.getElementById("homolog").innerHTML = data.homolog
+        document.getElementById("pojemnosc").innerHTML = data.pojemnosc + " l"
+        
+        document.getElementById("a_przyrost").innerHTML = data.woda.toFixed(1)
+        document.getElementById("a_cisnienie").innerHTML =  (data.cisnienie.toFixed(1)/10) +' MPa'
+        //document.getElementById("gauge-a").setAttribute("data-value", data.cisnienie);
+        console.log(data.cisnienie)
+        switch (data.typ) {
+        case 1:
+          document.getElementById("typ").innerHTML = "Wewnetrzny"
+          document.getElementById("przyrost").innerHTML = '<div class="row"> <div class="col-sm-5 text-left">'+ (data.pojemnosc * 0.08).toFixed(2)+ '</div><div class ="col-sm-4 text-right">8%</div>'
+          break;
+        case 2:
+          document.getElementById("typ").innerHTML = "Zewnętrzny"
+          document.getElementById("przyrost").innerHTML = '<div class="row"> <div class="col-sm-5 text-left">'+ (data.pojemnosc * 0.08).toFixed(2)+ '</div><div class ="col-sm-4 text-right">8%</div>'
+          break;
+        case 3:
+          document.getElementById("typ").innerHTML = "Zew. pełny"
+          document.getElementById("przyrost").innerHTML = '<div class="row"> <div class="col-sm-5 text-left">'+ (data.pojemnosc * 0.08).toFixed(2)+ '</div><div class ="col-sm-4 text-right">8%</div>'
+          break;
+        case 4:
+          document.getElementById("typ").innerHTML = "Walcowy"
+          document.getElementById("przyrost").innerHTML = '<div class="row"> <div class="col-sm-5 text-left">'+ (data.pojemnosc * 0.2).toFixed(2)+ '</div><div class ="col-sm-4 text-right">20%</div>'
+          break;
+        default:
+          console.log(`Sorry, we are out of ${data.typ}.`);
+        } 
+      }else {
+        document.getElementById("show").style.display  = "none";
+        document.getElementById("brak").style.visibility = "initial";
+
+      }
+      
+  }
+  // called when a message arrives
+  function onMessageArrived(message) {
+    console.log("onMessageArrived:"+message.payloadString +" topic : "+ message.destinationName);
+    data = JSON.parse(message.payloadString)
+    write(data)
+  }
+
+</script>
+
+
+{% endblock stylesheets %}
+
+{% block content %}  
+
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-sm-6 ">
+            <h1>Live Data</h1>
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="#">Home</a></li>
+              <li class="breadcrumb-item active">Start</li>
+            </ol>
+          </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+
+    <!-- Main content -->
+    <section id="show" class="content" >
+        
+        <div class="container-fluid">
+        <!-- Small boxes (Stat box) -->
+        <div class="row">
+          <div class="col-lg-2 col-6">
+            <!-- small box -->
+            <div class="small-box bg-info">
+              <div class="inner">
+                <p>Symbol zbiornika :</p>
+                <h3 id="symbol"></h3>
+
+                
+              </div>
+              <div class="icon">
+                <i class="ion ion-android-radio-button-off"></i>
+              </div>
+            </div>
+          </div>
+          <!-- ./col -->
+          <div class="col-lg-2 col-6">
+            <!-- small box -->
+            <div class="small-box bg-success">
+              <div class="inner">
+                <p>Numer zbiornika :</p>
+                <h3 id="numer"></h3>
+              </div>
+              <div class="icon">
+                <i class="ion ion-stats-bars"></i>
+              </div>
+            </div>
+          </div>
+          <!-- ./col -->
+          <div class="col-lg-3 col-12">
+            <!-- small box -->
+            <div class="small-box bg-warning">
+              <div class="inner">
+                <p>Numer homologacji :</p>
+                <h3 id="homolog"> </h3>
+              </div>
+              <div class="icon">
+                <i class="ion ion-ios-compose-outline"></i>
+              </div>
+            </div>
+          </div>
+          <!-- ./col -->
+          <div class="col-lg-2 col-6">
+            <!-- small box -->
+            <div class="small-box bg-info">
+              <div class="inner">
+                <p>Pojemność zbiornika :</p>
+                <h3 id="pojemnosc"> </h3>
+
+                
+              </div>
+              <div class="icon">
+                <i class="ion ion-ios-pie"></i>
+              </div>
+            </div>
+          </div>
+
+                    <!-- ./col -->
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box bg-danger">
+              <div class="inner">
+                <p>Typ zbiornika :</p>
+                <h3 id="typ"> </h3>
+              </div>
+              <div class="icon">
+                <i class="ion ion-social-tumblr"></i>
+              </div>
+            </div>
+          </div>
+
+
+        <div class="container-fluid">
+        <!-- Small boxes (Stat box) -->
+        <div class="row">
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box bg-info">
+              <div class="inner">
+                <p>Przyrost wymagany :</p>
+                <h3 id="przyrost"></h3>
+              </div>
+              <div class="icon">
+                <i class="ion ion-ios-pulse-strong"></i>
+              </div>
+            </div>
+          </div>
+          <!-- ./col -->
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box bg-success">
+              <div class="inner">
+                <p>Aktualny przyrost :</p>
+                <h3 id="a_przyrost"></h3>
+              </div>
+              <div class="icon">
+                <i class="ion ion-ios-speedometer"></i>
+              </div>
+            </div>
+          </div>
+          <!-- ./col -->
+        
+
+        <div class="container-fluid">
+        <!-- Small boxes (Stat box) -->
+        <div class="row">
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box bg-info">
+              <div class="inner">
+                <p>Ciśnienie wymagane :</p>
+                <h3 id="przyrost">6,75 MPa</h3>
+              </div>
+              <div class="icon">
+                <i class="ion ion-arrow-graph-up-right"></i>
+              </div>
+            </div>
+          </div>
+          <!-- ./col -->
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box bg-success">
+              <div class="inner">
+                <p>Aktualne ciśnienie :</p>
+                <h3 id="a_cisnienie"></h3>
+                
+               </div>
+              <div class="icon">
+                <i class="ion ion-ios-speedometer"></i>
+              </div>
+            </div>
+          </div>
+          <!-- ./col -->
+          </div></div>
+
+
+<div class="container-fluid">
+        <!-- Small boxes (Stat box) -->
+        <div class="row">
+          <div class="col-lg-1 col-6">
+            <!-- small box -->
+            <div class="small-box bg-danger">
+              <div class="inner">
+              <p>LP</p>
+                <h3 id="przyrost">1</h3>
+              </div>
+  
+            </div>
+          </div>
+          <!-- ./col -->
+          <div class="col-lg-2 col-6">
+            <!-- small box -->
+            <div class="small-box bg-danger">
+              <div class="inner">
+                <p>Aktualny przyrost :</p>
+                <h3 id="a_przyrost">1.5</h3>
+              </div>
+      
+            </div>
+          </div>
+            
+            <div class="col-lg-2 col-6">
+            <!-- small box -->
+            <div class="small-box bg-danger">
+              <div class="inner">
+                <p>Ciśnienie :</p>
+                <h3 id="a_przyrost">1.5</h3>
+              </div>
+      
+            </div>
+          </div>
+
+          <!-- ./col -->
+</div></div>
+
+    </section>
+    <!-- /.content -->
+    <section id="brak" class="content">
+
+     <div class="row">
+          <div class="col-lg-8 col-12">
+            <!-- small box -->
+            <div class="small-box bg-danger">
+              <div class="inner">
+                
+                <h3 >BRAK WPISANEGO ZBIORNIKA NA STACJI ROZRYWANIA</h3>
+
+                
+              </div>
+              <div class="icon">
+                <i class="ion ion-bag"></i>
+              </div>
+            </div>
+          </div>
+    </section>
+  </div>
+  
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+
+  <!-- jQuery -->
+  <script src="/static/assets/plugins/jquery/jquery.min.js"></script>
+  <!-- Bootstrap 4 -->
+  <script src="/static/assets/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- pace-progress -->
+  <!--<script src="/static/assets/plugins/pace-progress/pace.min.js"></script> -->
+  <!-- AdminLTE App -->
+  <script src="/static/assets/js/adminlte.min.js"></script>
+  <!-- AdminLTE for demo purposes -->
+  <script src="/static/assets/js/demo.js"></script>
+
+
+{% endblock javascripts %}

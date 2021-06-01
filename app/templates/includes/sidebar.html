@@ -1,0 +1,87 @@
+  <!-- Main Sidebar Container -->
+  <aside class="main-sidebar sidebar-dark-primary elevation-4">
+    <!-- Brand Logo -->
+    <a href="/" class="brand-link">
+      <img src="/static/assets/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+      <span class="brand-text font-weight-light">AdminBOR v0.1</span>
+    </a>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <!-- Sidebar user panel (optional) -->
+      <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+        <div class="image">
+        </div>
+        <div class="info">
+          <a href="{% url 'logout' %}" class="d-block">
+            {{ request.user.username }} - Wyloguj
+          </a>
+        </div>
+      </div>
+
+      <!-- SidebarSearch Form -->
+
+      <!-- SidebarSearch Form -->
+      <div class="form-inline">
+        <div class="input-group" data-widget="sidebar-search">
+          <input style="display: none;" class="form-control form-control-sidebar" type="search" placeholder="Search" aria-label="Search">
+          <div class="input-group-append">
+            <button style="display: none;" class="btn btn-sidebar">
+              <i style="display: none;" class="fas fa-search fa-fw"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar Menu -->
+      <nav class="mt-2">
+        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+          <!-- Add icons to the links using the .nav-icon class
+               with font-awesome or any other icon font library -->
+          <li class="nav-item ">
+            <a href="{% url 'home' %}" class="nav-link {{edit_homolog}}">
+              <i class="nav-icon fas fa-user-edit"></i>
+              <p>
+                Zapisane homologacje
+                <i class="right fas fa-angle-right"></i>
+              </p>
+            </a>
+          </li>
+
+          <li class="nav-item ">
+            <a href="{% url 'addhomolog' %}" class="nav-link {{add_homolog}}">
+              <i class="nav-icon fas fa-folder-plus"></i>
+              <p>
+                Dodaj homologacje
+                <i class="right fas fa-angle-right"></i>
+              </p>
+            </a>
+          </li>
+
+          <li class="nav-item ">
+            <a href="{% url 'badanie_index' %}" class="nav-link {{badania}}">
+              <i class="nav-icon fas fa-print"></i>
+              <p>
+                Raporty
+                <i class="right fas fa-angle-right"></i>
+              </p>
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a href="{%url 'test'%}" class="nav-link {{live}}">
+              <i class="nav-icon fas fa-chart-line"></i>
+              <p>
+                Live data
+                <blink class="right"><span class="right badge badge-info">new</span></blink>
+              </p>
+            </a>
+          </li>
+
+        </ul>
+      </nav>
+      <!-- /.sidebar-menu -->
+    </div>
+    <!-- /.sidebar -->
+  </aside>
+  

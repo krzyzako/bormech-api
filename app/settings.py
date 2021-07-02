@@ -20,7 +20,6 @@ ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
 #    'channels',
-    'mqtt',
     'mathfilters',
     'corsheaders',
     'django.contrib.admin',
@@ -149,9 +148,9 @@ STATIC_URL = '/static/'
 ADMIN_MEDIA_PREFIX = '/admin/'
 
 # Extra places for collectstatic to find static files.
-STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, '/app/static/'),
-)
+# STATICFILES_DIRS = (
+#     os.path.join(BASE_DIR, '/app/static/'),
+# )
 SWAGGER_SETTINGS = {
     'JSON_EDITOR': True,
     "exclude_namespaces": [], # List URL namespaces to ignore

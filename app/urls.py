@@ -30,7 +30,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('auth/', include('rest_auth.urls')),
     path("", include("authentication.urls")),
-    path("",views.index),
+    
     path("homolog/", include("homolog.urls")),
     path("badania/", include("tanks.urls")),
     path("api/homolog/", include("homolog.urlapi"), name="apitest" ),

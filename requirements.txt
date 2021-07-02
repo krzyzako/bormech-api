@@ -34,4 +34,3 @@ speedtest-cli==2.1.2
 virtualenv==15.1.0
 webencodings==0.5.1
 xhtml2pdf==0.2.4
-mysqlclient

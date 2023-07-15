@@ -11,7 +11,7 @@ html5lib==1.1
 ipaddress==1.0.17
 keyring==17.1.1
 keyrings.alt==3.1.1
-Pillow==6.2.2
+Pillow==9.3.0
 py-getch==1.0.1
 pycrypto==2.6.1
 PyPDF2==1.26.0

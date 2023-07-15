@@ -1,6 +1,6 @@
 asn1crypto==0.24.0
 configparser==3.5.0b2
-cryptography==2.6.1
+cryptography==41.0.2
 Django==1.11.26
 django-mathfilters==1.0.0
 django-xhtml2pdf==0.0.4

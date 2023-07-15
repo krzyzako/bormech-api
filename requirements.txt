@@ -14,7 +14,7 @@ keyrings.alt==3.1.1
 Pillow==6.2.2
 py-getch==1.0.1
 pycrypto==2.6.1
-PyPDF2==1.26.0
+PyPDF2==1.27.9
 python-snap7==0.10
 pytz==2019.3
 pyxdg==0.25
